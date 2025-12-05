@@ -36,4 +36,4 @@ jobs:
 
       - name: Run pytest
         id: run-pytest
-        run: pytest --maxfail=1 --disable-warnings -v -s
+        run: pytest -v -s
