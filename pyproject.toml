@@ -44,4 +44,4 @@ include = ["pytest_depends_on*"]
 namespaces = false
 
 [project.entry-points.pytest11]
-better_report = "pytest_depends_on.depend_on"
+depend_on = "pytest_depends_on.depend_on"
