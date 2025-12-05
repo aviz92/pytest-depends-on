@@ -33,9 +33,6 @@ jobs:
         id: install-dependencies
         run: uv sync
 
-      - name: Install local package
-        run: uv pip install -e .
-
       - name: Run pytest
         id: run-pytest
         run: uv run pytest -v -s
