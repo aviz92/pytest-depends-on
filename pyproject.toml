@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-depends-on"
-version = "0.0.1"
+version = "1.0.0"
 description = "A Python package for managing test dependencies in pytest."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ authors = [{ name = "Avi Zaguri" },]
 keywords = ["development", "python", "pytest", "pytest-dependensies", "dependensies", "testing", "automation"]
 
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: Production/Stable",
     "Intended Audience :: Developers",
     "Framework :: Pytest",
     "Programming Language :: Python :: 3.11",
