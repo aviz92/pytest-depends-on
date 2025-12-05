@@ -34,7 +34,7 @@ jobs:
         run: uv sync
 
       - name: Install local package
-        run: uv install -e .
+        run: uv pip install -e .
 
       - name: Run pytest
         id: run-pytest
