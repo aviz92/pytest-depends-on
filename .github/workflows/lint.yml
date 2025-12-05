@@ -32,4 +32,6 @@ jobs:
           uv sync
 
       - name: Run pre-commit (all hooks)
-        run: pre-commit run --all-files --show-diff-on-failure
+        run: |
+          source .venv/bin/activate
+          pre-commit run --all-files --show-diff-on-failure
