@@ -18,6 +18,9 @@ jobs:
         id: checkout-code
         uses: actions/checkout@v4
 
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -31,8 +34,7 @@ jobs:
 
       - name: Install dependencies
         id: install-dependencies
-        run: |
-          uv sync
+        run: uv sync
 
       - name: Run pytest
         id: run-pytest
