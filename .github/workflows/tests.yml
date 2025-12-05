@@ -31,9 +31,8 @@ jobs:
 
       - name: Install dependencies
         id: install-dependencies
-        run: |
-          uv sync
+        run: uv sync
 
       - name: Run pytest
         id: run-pytest
-        run: pytest --maxfail=1 --disable-warnings -v -s
+        run: uv run pytest -v -s

@@ -15,6 +15,7 @@ keywords = ["development", "python", "pytest", "pytest-dependensies", "dependens
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
+    "Framework :: Pytest",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
     "Topic :: System :: Logging",
@@ -43,4 +44,4 @@ include = ["pytest_depends_on*"]
 namespaces = false
 
 [project.entry-points.pytest11]
-better_report = "pytest_depends_on.depend_on"
+depend_on = "pytest_depends_on.depends_on"
