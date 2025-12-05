@@ -1,129 +1,97 @@
-# 🧱 Dev Template Repository
+# pytest-depends-on
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![Code style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Code style: Pylint](https://img.shields.io/badge/code%20style-pylint-000000.svg)](https://github.com/pylint-dev/pylint)
+An advanced pytest plugin designed for Python projects, offering robust dependency management utilities to enhance the testing workflow. <br>
+It allows tests to be skipped based on the execution status of other tests, ensuring that dependent tests do not run if their prerequisites fail or are skipped, resulting in a cleaner and more efficient testing experience.
 
-A comprehensive, production-ready template repository for initializing new development projects with consistent tooling, editor settings, GitHub workflows, and best practices. This template serves as a **baseline setup** for modern development workflows, reducing setup overhead and promoting standardization across all your codebases.
+-----
 
-## 🎯 Overview
-This template provides a solid foundation for Python projects with:
-- **Pre-configured development environment** with VS Code settings and extensions
-- **Automated CI/CD pipelines** using GitHub Actions
-- **Code quality enforcement** with linting, formatting, and testing
-- **Professional project structure** with proper documentation and metadata
-- **Team collaboration tools** including PR templates and code ownership
+## 🚀 Features
+- ✅ **depends-on**: A powerful marker to declare test dependencies. If a parent test fails or hasn't run, the dependent test is automatically skipped.
+    - **Marker:** `@pytest.mark.depends_on`
+    - **Arguments:**
+        - `tests` (list): A list of parent test names (node IDs) that the current test depends on.
+        - `status` (optional): The expected status of the parent test. Defaults to `PASSED`. The dependent test will skip if the parent status does not match this value.
+        - `allowed_not_run` (optional): Boolean. If `True`, the test will not skip if the parent test has not run yet. Defaults to `False` (skips if parent is missing).
+          <br> <br>
+  - ✅ **Automatic Status Tracking**: Automatically tracks the result (`passed`, `failed`, `skipped`, `xfailed`, `xpassed`) of every test during the `call` phase to resolve dependencies dynamically.
 
----
+-----
 
-## 📁 What's Included
-
-### 🔧 Development Environment (`.vscode/`)
-- **`settings.json`**: Editor defaults (format on save, lint integration, tab size, Python interpreter)
-- **`extensions.json`**: Recommended extensions for Python development and team consistency
-- **`keybindings.json`**: Custom keyboard shortcuts for improved productivity
-- **`launch.json`**: Debugging configurations for Python applications
-
-### ⚙️ GitHub Configuration (`.github/`)
-- **Workflows**: Automated CI/CD pipelines for testing, linting, and publishing
-  - `publish_to_pypi.yml`: Automated PyPI package publishing
-- **`CODEOWNERS`**: Define default code reviewers per folder/path
-- **Issue templates**: Standardized bug reports and feature requests
-- **Pull request template**: Enforce contribution guidelines and checklists
-
-### 🧹 Code Quality & Style
-- **Python-specific configurations**:
-  - `requirements.txt`: Core dependencies and development tools
-  - `MANIFEST.in`: Package distribution configuration
-  - `env.template`: Environment variables template
-- **`.gitignore`**: Preconfigured for Python, IDEs, and common tools
-- **`.cursor/`**: Cursor IDE specific configurations and instructions
-
-### 📄 Project Metadata
-- **`README.md`**: Comprehensive project documentation
-- **`LICENSE`**: MIT license for open-source projects
-- **`CHANGELOG.md`**: Version tracking and release notes
-
----
-
-## 🚀 Quick Start
-
-### 1. Create New Repository
-Click **"Use this template"** on GitHub to create a new repository based on this template.
-
-### 2. Clone and Setup
-```bash
-# Clone your new repository
-git clone https://github.com/your-username/your-new-repo.git
-cd your-new-repo
-
-# Create virtual environment
-uv venv
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-uv sync # or uv pip install -r requirements.txt
-
-# Copy environment template
-cp env.template .env
-# Edit .env with your specific configuration
-```
-
-### 3. Customize for Your Project
-1. **Update project metadata**:
-   - Edit `README.md` with your project details
-   - Update `requirements.txt` with your specific dependencies
-   - Modify `MANIFEST.in` for package distribution
-
-2. **Configure environment**:
-   - Edit `.env` file with your environment variables
-   - Update VS Code settings in `.vscode/settings.json` if needed
-
-### 4. Setup Pre-commit Hooks
-```bash
-# Install pre-commit hooks
-pre-commit install
-```
+## 📦 Installation
 
 ```bash
-# Run on all files (optional, for existing codebase)
-pre-commit run --all-files
+pip install pytest-depends-on
 ```
 
-```bash
-# Run on all files excluding specific files (example: main.py) (optional, for existing codebase)
-pre-commit run --files $(git ls-files | grep -v "main.py")
+-----
+
+### 🔧 Usage
+
+#### 1\. Register the marker
+
+Add the marker to your `pytest.ini` file to avoid warnings (optional, as the plugin programmatically registers it, but good practice):
+
+```ini
+[pytest]
+markers =
+    depends_on: mark test as dependent on another test
 ```
 
-**Automatic Usage:**
-Once installed, pre-commit will automatically run on every `git commit`. If any hook fails:
-- **Fix the issues** and commit again
-- **Skip hooks** (not recommended): `git commit --no-verify`
+#### 2\. Implement in your tests
 
----
+Use the marker decorator on your test functions.
+
+**Basic Dependency:**
+`test_child` will only run if `test_parent` passes.
+
+```python
+import pytest
+
+def test_parent():
+    assert True
+
+@pytest.mark.depends_on(tests=["test_parent"])
+def test_child():
+    assert True
+```
+
+**Custom Status Dependency:**
+`test_child` will run only if `test_parent` fails (useful for testing error handling or recovery).
+
+```python
+import pytest
+
+from pytest_depends_on.consts.status import Status
+
+@pytest.mark.depends_on(tests=["test_parent"], status=Status.FAILED)
+def test_child():
+    pass
+```
+
+**Soft Dependency:**
+`test_child` will run even if `test_parent` hasn't executed yet (e.g., due to ordering).
+
+```python
+import pytest
+
+@pytest.mark.depends_on(tests=["test_parent"], allowed_not_run=True)
+def test_child():
+    pass
+```
+
+-----
 
 ## 🤝 Contributing
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and add tests
-4. Ensure all tests pass: `pytest`
-5. Format your code: `black .`
-6. Commit your changes: `git commit -m 'Add amazing feature'`
-7. Push to the branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
 
----
+If you have a helpful tool, pattern, or improvement to suggest:
+Fork the repo <br>
+Create a new branch <br>
+Submit a pull request <br>
+I welcome additions that promote clean, productive, and maintainable development. <br>
 
-## 📋 Development Checklist
-When using this template for a new project:
+-----
 
-- [ ] Update README.md with project-specific information
-- [ ] Configure environment variables in .env
-- [ ] Update requirements.txt with project dependencies
-- [ ] Set up GitHub repository secrets for CI/CD
-- [ ] Configure package metadata in setup.py or pyproject.toml
-- [ ] Add project-specific tests
+## 🙏 Thanks
 
----
+Thanks for exploring this repository\! <br>
+Happy coding\! <br>
