@@ -1,3 +1,12 @@
+![PyPI version](https://img.shields.io/pypi/v/pytest-depends-on)
+![Python](https://img.shields.io/badge/python->=3.12-blue)
+![Development Status](https://img.shields.io/badge/status-stable-green)
+![Maintenance](https://img.shields.io/maintenance/yes/2026)
+![PyPI](https://img.shields.io/pypi/dm/pytest-depends-on)
+![License](https://img.shields.io/pypi/l/pytest-depends-on)
+
+---
+
 # pytest-depends-on
 
 An advanced pytest plugin designed for Python projects, offering robust dependency management utilities to enhance the testing workflow. <br>
