@@ -22,7 +22,9 @@ It allows tests to be skipped based on the execution status of other tests, ensu
         - `status` (optional): The expected status of the parent test. Defaults to `PASSED`. The dependent test will skip if the parent status does not match this value.
         - `allowed_not_run` (optional): Boolean. If `True`, the test will not skip if the parent test has not run yet. Defaults to `False` (skips if parent is missing).
           <br> <br>
-  - ✅ **Automatic Status Tracking**: Automatically tracks the result (`passed`, `failed`, `skipped`, `xfailed`, `xpassed`) of every test during the `call` phase to resolve dependencies dynamically.
+- ✅ **Automatic Status Tracking**: Automatically tracks the result (`passed`, `failed`, `skipped`, `xfailed`, `xpassed`) of every test during the `call` phase to resolve dependencies dynamically.
+- ✅ **Opt-in activation**: The plugin is inactive by default. Pass `--depends-on` to enable dependency tracking and skip behaviour.
+- ✅ **Automatic test reordering**: Pass `--depends-on-reorder` to reorder the collected test suite so parent tests always execute before their dependents — no manual ordering required.
 
 -----
 
@@ -36,15 +38,27 @@ pip install pytest-depends-on
 
 ### 🔧 Usage
 
-#### 1\. Register the marker
+#### 1\. Enable the plugin
 
-Add the marker to your `pytest.ini` file to avoid warnings (optional, as the plugin programmatically registers it, but good practice):
+The plugin is opt-in. Add the flags to your `pytest.ini` (recommended) or pass them directly on the command line:
 
 ```ini
 [pytest]
+addopts =
+    --depends-on          # enable dependency tracking and skip behaviour
+    --depends-on-reorder  # reorder tests so parents always run first (requires --depends-on)
+
 markers =
     depends_on: mark test as dependent on another test
 ```
+
+Or run ad-hoc:
+
+```bash
+pytest --depends-on --depends-on-reorder
+```
+
+Without `--depends-on`, all `depends_on` markers are ignored and every test runs normally.
 
 #### 2\. Implement in your tests
 
