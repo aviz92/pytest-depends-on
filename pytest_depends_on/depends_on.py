@@ -4,11 +4,12 @@ from _pytest.fixtures import FixtureRequest
 from _pytest.python import Function
 from custom_python_logger import get_logger
 
+from pytest_depends_on import LOGGER_NAME
 from pytest_depends_on.consts.status import Status
 
 test_results: dict[str, str] = {}
 
-logger = get_logger("pytest_depends_on")
+logger = get_logger(LOGGER_NAME)
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:

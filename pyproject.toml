@@ -7,7 +7,7 @@ name = "pytest-depends-on"
 version = "2.0.0"
 description = "A Python package for managing test dependencies in pytest."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [{ name = "Avi Zaguri" },]
 keywords = ["development", "python", "pytest", "pytest-dependensies", "dependensies", "testing", "automation"]
@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "build>=1.3.0",
     "colorlog>=6.10.1",
-    "custom-python-logger>=2.0.10",
+    "custom-python-logger>=4.0.0",
     "pre-commit>=4.5.0",
     "pytest>=9.0.1",
     "python-dotenv>=1.2.1",
