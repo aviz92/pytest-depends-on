@@ -2,7 +2,6 @@ import pytest
 
 from pytest_depends_on.consts.status import Status
 
-
 # def test_parent() -> None:
 #     assert True
 
