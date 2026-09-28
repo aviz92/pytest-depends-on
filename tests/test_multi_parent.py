@@ -46,3 +46,13 @@ def test_child_c() -> None:  # expected to status "SKIPPED"
 )
 def test_child_d() -> None:
     assert True
+
+
+@pytest.mark.depends_on(
+    tests=[
+        {"name": "test_parent_does_not_exist", "status": Status.FAILED, "allowed_not_run": True},
+        "test_parent_a",
+    ],
+)
+def test_child_e() -> None:  # regression: a per-parent "status" override must not leak onto later parents
+    assert True
