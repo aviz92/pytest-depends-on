@@ -118,8 +118,7 @@ def _extract_parent_names(marker: pytest.Mark) -> list[str]:
     names: list[str] = []
     for parent_test in marker.kwargs.get("tests", []):
         if isinstance(parent_test, dict):
-            name = parent_test.get("name")
-            if name:
+            if name := parent_test.get("name"):
                 names.append(name)
         else:
             names.append(parent_test)
@@ -167,12 +166,10 @@ def pytest_collection_modifyitems(config: Config, items: list[Function]) -> None
     graph: dict[str, list[str]] = {item.nodeid: [] for item in items}
 
     for item in items:
-        marker = item.get_closest_marker("depends_on")
-        if not marker:
+        if not (marker := item.get_closest_marker("depends_on")):
             continue
         for parent_name in _extract_parent_names(marker):
-            parent_nodeids = _resolve_parent_nodeids(parent_name, item.nodeid)
-            if not parent_nodeids:
+            if not (parent_nodeids := _resolve_parent_nodeids(parent_name, item.nodeid)):
                 logger.warning(
                     "pytest-depends-on: Parent '%s' (dependency of '%s') not found in collection. Ignoring.",
                     parent_name,
