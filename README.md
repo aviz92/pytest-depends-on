@@ -21,6 +21,7 @@ It allows tests to be skipped based on the execution status of other tests, ensu
         - `tests` (list): A list of parent test names (node IDs) that the current test depends on.
         - `status` (optional): The expected status of the parent test. Defaults to `PASSED`. The dependent test will skip if the parent status does not match this value.
         - `allowed_not_run` (optional): Boolean. If `True`, the test will not skip if the parent test has not run yet. Defaults to `False` (skips if parent is missing).
+        - `match_params` (optional): List of parametrize argument names (e.g. `["chip"]`). The parent name may omit its `[...]` suffix, and only the parent instance(s) whose values for those arguments equal the child's are used. Can also be set per entry when `tests` items are dicts.
           <br> <br>
 - ✅ **Automatic Status Tracking**: Automatically tracks the result (`passed`, `failed`, `skipped`, `xfailed`, `xpassed`) of every test during the `call` phase to resolve dependencies dynamically.
 - ✅ **Opt-in activation**: The plugin is inactive by default. Pass `--depends-on` to enable dependency tracking and skip behaviour.
@@ -101,6 +102,25 @@ import pytest
 def test_child():
     pass
 ```
+
+**Parametrized Dependency (`match_params`):**
+Each `test_boot[chip]` depends on the `test_flash` instance with the same `chip`.
+Without `match_params`, `tests=["test_flash"]` would not match any parametrized instance.
+
+```python
+import pytest
+
+@pytest.mark.parametrize("chip", ["a", "b"])
+def test_flash(chip):
+    ...
+
+@pytest.mark.parametrize("chip", ["a", "b"])
+@pytest.mark.depends_on(tests=["test_flash"], match_params=["chip"])
+def test_boot(chip):
+    ...  # test_boot[b] is skipped if test_flash[b] did not pass
+```
+
+Several names can be combined (`match_params=["chip", "board"]`); all must match. A name the child does not parametrize raises a `UsageError`.
 
 -----
 
