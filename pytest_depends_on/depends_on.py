@@ -151,7 +151,7 @@ def check_dependency(request: FixtureRequest) -> None:
             if allowed_parent_not_run and parent_result is None:
                 continue
             if not parent_result:
-                pytest.skip(f"Test skipped: Dependency '{parent_test_name}' has not run yet.")
+                pytest.skip(f"Test skipped: depends on '{parent_test_name}' has not run yet.")
 
             mismatch = (
                 parent_result not in DEFAULT_ACCEPTED_STATUSES
@@ -159,7 +159,7 @@ def check_dependency(request: FixtureRequest) -> None:
                 else parent_result != parent_result_expected
             )
             if mismatch:
-                pytest.skip(f"Test skipped: Dependency '{parent_test_name}' did not pass (status: {parent_result}).")
+                pytest.skip(f"Test skipped: depends on '{parent_test_name}' (parent result status: {parent_result}).")
 
 
 def _topological_sort(graph: dict[str, list[str]], all_names: list[str]) -> list[str]:
